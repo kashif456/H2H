@@ -1,0 +1,38 @@
+﻿
+html
+  head
+   title User Profile
+ 
+  body
+ 
+    h1 User Profile
+    #userProfile
+    form(name = "find", action = "/userprofile", method = "post")
+      | Firstname
+      input(type="text", name="firstname", id="firstname")
+      br
+      | Lastname
+      input(type="text", name="lastname", id="lastname")
+      br
+      | displayname
+      input(type="text", name="displayname", id="displayname")
+      br
+      | email
+      input(type="text", name="email", id="email")
+      
+      | Gender
+      input(type="text", name="gender", id="gender")
+      br
+      | DOB
+      input(type="text", name="dob", id="dob")
+      br
+      | location
+      input(type="text", name="locationtext", id="location")      
+      br
+      | locale
+      input(type="text", name="locale", id="locale")
+      br
+      | timezone
+      input(type="text", name="timezone", id="timezone")
+      br
+      input(type="submit", value="Save")
