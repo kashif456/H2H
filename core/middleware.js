@@ -2,12 +2,14 @@ exports.setup = function setup(app, conf){
     var mysql   = require('mysql')
       , express = require('express')
       , pool    = mysql.createPool({
-            host     : conf.db.mysql.dbhost,
-            user     : conf.db.mysql.dbuser,
-            password : conf.db.mysql.dbpassword,
-            database : conf.db.mysql.database,
+            host     :'', // conf.db.mysql.dbhost,
+            user     :'', // conf.db.mysql.dbuser,
+            password :'', // conf.db.mysql.dbpassword,
+            database :'', // conf.db.mysql.database,
             port : conf.db.mysql.dbport
         });            
+    
+      app.set('jwtTokenSecret', 'tknSecrt@dp12');
 
     app.configure(function(){
         conf.application.middleware.forEach(function(val){

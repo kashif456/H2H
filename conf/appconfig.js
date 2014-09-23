@@ -36,11 +36,13 @@
     conf.defaults = {
         application:    {
             salt        : 'dp4512ms',
-            username    : 'dipesh',
+            username    : 'dip',
             password    : 'D=M@Hp+esRGRDSRTnoDeJs==',
             realm       : 'Authenticated',
             routes      : ['list'],
-            middleware  : ['compress','json','urlencoded','logger','bodyParser','cookieParser']
+            jwtSecrete  : 'tknSecrt@dp12',
+            middleware  : ['compress','json','urlencoded','logger','bodyParser','cookieParser'],
+            itemsperpage:20
         },
         server:         {
             host        : 'localhost',

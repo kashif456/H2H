@@ -20,7 +20,7 @@ exports.findCenters = function ( req, res ) {
     }
 
     if ( typeof req.query.distance == 'undefined' )
-    { distance = ''; }
+    { distance = '-1'; }
     else {
         distance = req.query.distance;
     }
@@ -35,46 +35,63 @@ exports.findCenters = function ( req, res ) {
         if ( err ) { console.log( ltdata ); }
         else {
 
-            if ( lon != '' && lat != '' && distance != '' ) {
+            if ( lon != '' && lat != ''  ) {
+
                 var mydata = JSON.parse( ltdata );
-                var cntrs = '';
+                var cntrs = '';                                       
+                        mydata.forEach( function ( cdata ) {
+                            var cust = cdata.customers;
+                            cust.forEach( function ( gdata ) {
 
-                mydata.forEach( function ( cdata ) {
-                    var cust = cdata.customers;
-                    cust.forEach( function ( gdata ) {
+                                if (gdata.latitude.trim() !='' && gdata.longitude.trim() !='')
+                                    {
+                                    var distmtr = geolib.getDistance(
+                                        { latitude: lat, longitude: lon },
+                                        { latitude: gdata.latitude, longitude: gdata.longitude }
+                                        );
 
-                        var distmtr = geolib.getDistance(
-                            { latitude: lat, longitude: lon },
-                            { latitude: gdata.latitude, longitude: gdata.longitude }
-                            );
+                                    var distmiles = geolib.convertUnit( 'mi', distmtr, 2 );
 
-                        var distmiles = geolib.convertUnit( 'mi', distmtr, 2 );
+                                    if ( distmiles <= distance || distance=='-1' ) {
+                                        gdata.distance = distmiles;
+                                        if ( cntrs == '' ) {
+                                            cntrs = '[' + JSON.stringify( gdata );
+                                        }
+                                        else {
+                                            cntrs = cntrs + ',' + JSON.stringify( gdata );
+                                        }
+                                }
+                                }
+                            });
+                        });
 
-                        if ( distmiles <= distance ) {
-                            gdata.distance = distmiles;
-                            if ( cntrs == '' ) {
-                                cntrs = '[' + JSON.stringify( gdata );
-                            }
-                            else {
-                                cntrs = cntrs + ',' + JSON.stringify( gdata );
-                            }
+                        if ( cntrs != '' ) {
+                            cntrs = cntrs + ']';
+                            var tmp = JSON.parse( cntrs );
+                            if(distance=='-1')
+                                {
+                                    var tmp2 = tmp.sort( function ( a, b ) {
+                                       var s1=a.location.toLowerCase().replace(',','').replace(' ','');
+                                       var s2=b.location.toLowerCase().replace(',','').replace(' ','');
+                                    return ((s1 == s2) ? 0 : ((s1 > s2) ? 1 : -1 )); 
+                                });
+                                cntrs = JSON.stringify( tmp2 );
+
+                                    }
+                            else
+                                {
+                                var tmp1 = tmp.sort( function ( a, b ) {
+                                    return a.distance - b.distance;
+                                });
+                                cntrs = JSON.stringify( tmp1 );
+                            }                            
                         }
-                    });
-                });
-
-                if ( cntrs != '' ) {
-                    cntrs = cntrs + ']';
-                    var tmp = JSON.parse( cntrs );
-                    var tmp1 = tmp.sort( function ( a, b ) {
-                        return a.distance - b.distance;
-                    });
-
-                    cntrs = JSON.stringify( tmp1 );
-                }
-                else {
-                    cntrs = 'No centers within ' + distance + ' miles';
-                }
-                res.send( cntrs );
+                        else {
+                           // cntrs = 'No centers within ' + distance + ' miles';
+                           cntrs ={message:'No centers within ' + distance + ' miles'}
+                        }
+                        res.send( cntrs );
+                   
             }
             else {
                 res.send( ltdata );

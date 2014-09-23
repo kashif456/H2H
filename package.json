@@ -18,7 +18,9 @@
 	"passport" : "*", 		
     "passport-local" : "*", 	
     "passport-facebook" : "*",
-	"bcrypt-nodejs":"*"
+	"bcrypt-nodejs":"*",
+	"jwt-simple":"*",
+	"moment":"*"
 
   }
 }
